@@ -89,7 +89,7 @@ func (n *SaltWrappedPrivateKeyResource) Create(ctx context.Context, req resource
 		return
 	}
 
-	wrappedToken, err := n.client.WrappedPrivateKey(ctx, plan.MinionId.String())
+	wrappedToken, err := n.client.WrappedPrivateKey(ctx, plan.MinionId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error creating a wrapped private key",
@@ -141,7 +141,7 @@ func (n *SaltWrappedPrivateKeyResource) Delete(ctx context.Context, req resource
 		return
 	}
 
-	err := n.client.DeleteKey(state.MinionId.String())
+	err := n.client.DeleteKey(ctx, state.MinionId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Deleting public key for Minion",

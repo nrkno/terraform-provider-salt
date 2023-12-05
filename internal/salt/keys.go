@@ -61,6 +61,10 @@ func (s Client) WrappedPrivateKey(ctx context.Context, minionID string) (string,
 	}
 
 	createResp, err := s.Do(request)
+	if createResp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("got error from Salt API: %s", createResp.Status)
+	}
+
 	if err != nil {
 		return "", fmt.Errorf("unable to do request: %w", err)
 	}
@@ -80,7 +84,7 @@ func (s Client) WrappedPrivateKey(ctx context.Context, minionID string) (string,
 	return tokenResp.Return[0].WrapToken, nil
 }
 
-func (s Client) DeleteKey(minionID string) error {
+func (s Client) DeleteKey(ctx context.Context, minionID string) error {
 	var payload []keyDeleteData
 	p := keyDeleteData{
 		Client: "wheel",
@@ -101,18 +105,22 @@ func (s Client) DeleteKey(minionID string) error {
 		return err
 	}
 
-	createResp, err := s.Do(request)
+	deleteResp, err := s.Do(request)
+	if deleteResp.StatusCode != http.StatusOK {
+		return fmt.Errorf("got error from Salt API: %s", deleteResp.Status)
+	}
+
 	if err != nil {
 		return err
 	}
 
-	body, err := io.ReadAll(createResp.Body)
+	body, err := io.ReadAll(deleteResp.Body)
 	if err != nil {
 		return err
 	}
 
-	var deleteResp keyDeleteResp
-	err = json.Unmarshal(body, &deleteResp)
+	var d keyDeleteResp
+	err = json.Unmarshal(body, &d)
 	if err != nil {
 		return err
 	}

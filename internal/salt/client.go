@@ -51,6 +51,7 @@ func authenticate(endpoint string, username string, password string) (string, er
 
 	request.Header.Add("Accept", "application/json")
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Add("User-Agent", "terraform-provider-salt/0.0.1")
 	resp, err := c.Do(request)
 	if err != nil {
 		return "", fmt.Errorf("c.Do: %w", err)
