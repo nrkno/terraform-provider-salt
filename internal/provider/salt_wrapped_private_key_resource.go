@@ -70,7 +70,6 @@ func (n *SaltWrappedPrivateKeyResource) Configure(ctx context.Context, req resou
 			"Unexpected Resource Configure Type",
 			fmt.Sprintf("Expected *http.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
-
 		return
 	}
 
@@ -86,12 +85,18 @@ func (n *SaltWrappedPrivateKeyResource) Create(ctx context.Context, req resource
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	wrappedToken := n.client.WrappedPrivateKey(plan.MinionId.String())
+	wrappedToken, err := n.client.WrappedPrivateKey(ctx, plan.MinionId.String())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error creating a wrapped private key",
+			"Could not create wrapped private key, unexpected error: "+err.Error(),
+		)
+		return
+	}
 
 	resourceModel := WrappedPrivateKeyResourceModel{
 		MinionId:          plan.MinionId,
@@ -128,6 +133,22 @@ func (n *SaltWrappedPrivateKeyResource) Update(ctx context.Context, req resource
 // from provider logic.
 func (n *SaltWrappedPrivateKeyResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	tflog.Trace(ctx, "SaltWrappedPrivateKeyResource.Delete")
+
+	var state WrappedPrivateKeyResourceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	err := n.client.DeleteKey(state.MinionId.String())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Deleting public key for Minion",
+			"Could not public key, unexpected error: "+err.Error(),
+		)
+		return
+	}
 }
 
 func (n *SaltWrappedPrivateKeyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
