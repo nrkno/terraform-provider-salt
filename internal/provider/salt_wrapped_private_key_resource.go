@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -152,5 +151,14 @@ func (n *SaltWrappedPrivateKeyResource) Delete(ctx context.Context, req resource
 }
 
 func (n *SaltWrappedPrivateKeyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	var state WrappedPrivateKeyResourceModel
+
+	state.MinionId = types.StringValue(req.ID)
+	state.WrappedPrivateKey = types.StringValue("value cant be reproduced")
+
+	diags := resp.State.Set(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
