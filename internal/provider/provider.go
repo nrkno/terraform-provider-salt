@@ -65,7 +65,7 @@ func (p *SaltProvider) Configure(ctx context.Context, req provider.ConfigureRequ
 		return
 	}
 
-	c, err := salt.New(data.Endpoint.ValueString(), data.Username.ValueString(), data.Password.ValueString())
+	c, err := salt.New(data.Endpoint.ValueString(), data.Username.ValueString(), data.Password.ValueString(), p.version)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"API Error Authentication",

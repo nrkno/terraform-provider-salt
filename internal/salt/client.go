@@ -21,10 +21,11 @@ type Client struct {
 	endpoint string
 	client   *http.Client
 	token    string
+	version  string
 }
 
-func New(endpoint string, username string, password string) (*Client, error) {
-	token, err := authenticate(endpoint, username, password)
+func New(endpoint string, username string, password string, version string) (*Client, error) {
+	token, err := authenticate(endpoint, username, password, version)
 	if err != nil {
 		return nil, err
 	}
@@ -33,10 +34,11 @@ func New(endpoint string, username string, password string) (*Client, error) {
 		endpoint: endpoint,
 		client:   http.DefaultClient,
 		token:    token,
+		version:  version,
 	}, nil
 }
 
-func authenticate(endpoint string, username string, password string) (string, error) {
+func authenticate(endpoint string, username string, password string, version string) (string, error) {
 	c := http.DefaultClient
 
 	data := url.Values{}
@@ -51,7 +53,7 @@ func authenticate(endpoint string, username string, password string) (string, er
 
 	request.Header.Add("Accept", "application/json")
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Add("User-Agent", "terraform-provider-salt/0.0.1")
+	request.Header.Add("User-Agent", fmt.Sprintf("terraform-provider-salt/%s", version))
 	resp, err := c.Do(request)
 	if err != nil {
 		return "", fmt.Errorf("c.Do: %w", err)
@@ -77,9 +79,7 @@ func authenticate(endpoint string, username string, password string) (string, er
 }
 
 func (s Client) Do(req *http.Request) (*http.Response, error) {
-	// TODO get version from provider
-	req.Header.Add("User-Agent", "terraform-provider-salt/0.0.1")
+	req.Header.Add("User-Agent", fmt.Sprintf("terraform-provider-salt/%s", s.version))
 	req.Header.Add("X-Auth-Token", s.token)
-
 	return s.client.Do(req)
 }
