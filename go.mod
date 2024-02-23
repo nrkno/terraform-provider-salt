@@ -5,7 +5,7 @@ go 1.21.4
 require (
 	github.com/hashicorp/terraform-plugin-framework v1.4.2
 	github.com/hashicorp/terraform-plugin-log v0.9.0
-	golang.org/x/vuln v1.0.1
+	golang.org/x/vuln v1.0.4
 	honnef.co/go/tools v0.4.6
 	mvdan.cc/gofumpt v0.6.0
 )
