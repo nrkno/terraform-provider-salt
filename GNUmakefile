@@ -8,9 +8,8 @@ testacc:
 
 .PHONY: fmt
 fmt:
-	go run mvdan.cc/gofumpt -w ./
+	golangci-lint run --fix
 
 .PHONY: check
 check:
-	go run honnef.co/go/tools/cmd/staticcheck ./...
-	go run golang.org/x/vuln/cmd/govulncheck ./...
+	pre-commit run -a

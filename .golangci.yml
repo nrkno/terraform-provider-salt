@@ -1,0 +1,21 @@
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gofumpt
+    - gosec
+    # gci has separate entry in .pre-commit-config.yaml due to https://github.com/golangci/golangci-lint/issues/2161
+    # - gci
+linters-settings:
+  gci:
+    sections:
+      - standard
+      - default
+      - localmodule
+    custom-order: true
+run:
+  timeout: 2m # default is 1, but increasing since execution in GitHub Actions can be a bit slow
