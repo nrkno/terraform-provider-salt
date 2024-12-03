@@ -1,2 +1,1 @@
 # Terraform Provider Salt
-
