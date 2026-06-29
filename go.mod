@@ -1,12 +1,10 @@
 module github.com/nrkno/terraform-provider-salt
 
-go 1.22.7
-
-toolchain go1.23.0
+go 1.24.0
 
 require (
 	github.com/hashicorp/terraform-plugin-framework v1.14.1
-	github.com/hashicorp/terraform-plugin-log v0.9.0
+	github.com/hashicorp/terraform-plugin-log v0.10.0
 	golang.org/x/vuln v1.1.3
 	honnef.co/go/tools v0.5.1
 	mvdan.cc/gofumpt v0.7.0
@@ -16,7 +14,7 @@ require (
 	github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/hashicorp/go-hclog v1.6.3 // indirect
 	github.com/hashicorp/go-plugin v1.6.2 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
